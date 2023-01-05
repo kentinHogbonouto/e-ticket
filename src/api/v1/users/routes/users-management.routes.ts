@@ -2,31 +2,31 @@ import { Request, Response, NextFunction, Router } from "express";
 
 import { body } from "express-validator";
 
-import AdminManagementController from "../controllers/admin-management.controller";
+import UsersManagementController from "../controllers/users-management.controller";
 
 import { ValidationMessages } from "../../../../validations/validation";
 
 import EnvironmentConfigs from "../../../../configs/environments";
 
-export default function AdminsManagementRoutes(
-  adminManagementController: AdminManagementController
+export default function UsersManagementRoutes(
+  usersManagementController: UsersManagementController
 ) {
   const router = Router();
 
   /**
    * @swaggers
    * tags:
-   *   name: Admins Management
+   *   name: Users Management
    */
 
   /**
    * @swagger
-   * /api/v1/managements/admins:
+   * /api/v1/managements/users:
    *   get:
    *     security:
    *       - bearerAuth: []
-   *     summary: Récupérer la liste des administrateurs
-   *     tags: [Admins Management]
+   *     summary: Récupérer la liste des utilisateurs
+   *     tags: [Users Management]
    *     parameters:
    *       - name: page
    *         in: query
@@ -48,7 +48,7 @@ export default function AdminsManagementRoutes(
    *           - desc
    *     responses:
    *       200:
-   *         description: Admins successfully found.
+   *         description: Users successfully found.
    *         content:
    *           application/json:
    *             schema:
@@ -84,30 +84,30 @@ export default function AdminsManagementRoutes(
    *                      items:
    *                        type: array
    *                        items:
-   *                           $ref: '#/components/schemas/Admin'
+   *                           $ref: '#/components/schemas/Users'
    *                  success:
    *                    type: boolean
    *                    example: true
    *                  message:
    *                    type: string
-   *                    example: Admins successfully found.
+   *                    example: Users successfully found.
    *       401:
    *         description: You have not authenticated.
    *       500:
    *         description: Erreur server
    */
   router.get("/", (req: Request, res: Response, next: NextFunction) =>
-    adminManagementController.getAllAdmins(req, res, next)
+    usersManagementController.findAll(req, res, next)
   );
 
   /**
    * @swagger
-   * /api/v1/managements/admins/{id}:
+   * /api/v1/managements/users/{id}:
    *   get:
    *     security:
    *       - bearerAuth: []
-   *     summary: Récupérer les données du compte d'un administrateur
-   *     tags: [Admins Management]
+   *     summary: Récupérer les données du compte d'un utilisateur
+   *     tags: [Users Management]
    *     parameters:
    *       - in: path
    *         name: id
@@ -116,7 +116,7 @@ export default function AdminsManagementRoutes(
    *         required: true
    *     responses:
    *       200:
-   *         description: Admin successfully found.
+   *         description: User successfully found.
    *         content:
    *           application/json:
    *             schema:
@@ -125,33 +125,31 @@ export default function AdminsManagementRoutes(
    *                  data:
    *                    type: object
    *                    properties:
-   *                      admin:
-   *                        $ref: '#/components/schemas/Admin'
+   *                      user:
+   *                        $ref: '#/components/schemas/User'
    *                  success:
    *                    type: boolean
    *                    example: true
    *                  message:
    *                    type: string
-   *                    example: Admin successfully found.
+   *                    example: User successfully found.
    *       401:
    *         description: You have not authenticated.
    *       404:
-   *         description: Admin not found.
+   *         description: User not found.
    *       500:
    *         description: Erreur server
    */
   router.get("/:id", (req: Request, res: Response, next: NextFunction) =>
-    adminManagementController.getAdmin(req, res, next)
+    usersManagementController.findOne(req, res, next)
   );
 
   /**
    * @swagger
-   * /api/v1/managements/admins:
+   * /api/v1/managements/users:
    *   post:
-   *     security:
-   *       - bearerAuth: []
-   *     summary: Créer le compte d'un administrateur
-   *     tags: [Admins Management]
+   *     summary: Créer le compte d'un utilisateur
+   *     tags: [Users Management]
    *     requestBody:
    *       required: true
    *       content:
@@ -159,15 +157,15 @@ export default function AdminsManagementRoutes(
    *           schema:
    *             type: object
    *             properties:
+   *               lastName:
+   *                 type: string
+   *                 example: Doe
+   *               firstName:
+   *                 type: string
+   *                 example: John
    *               email:
    *                 type: string
-   *                 example: admin@cdv.com
-   *               roleId:
-   *                 type: string
-   *                 example: 610299a5f4723947e8e9fd95
-   *               username:
-   *                 type: string
-   *                 example: john.doe
+   *                 example: Doe@john.com
    *               password:
    *                 type: string
    *                 example: e§udzyi12sCsqdiè#eg!
@@ -176,7 +174,7 @@ export default function AdminsManagementRoutes(
    *                 example: e§udzyi12sCsqdiè#eg!
    *     responses:
    *       201:
-   *         description: Admin successfully created.
+   *         description: User successfully created.
    *         content:
    *           application/json:
    *             schema:
@@ -185,18 +183,18 @@ export default function AdminsManagementRoutes(
    *                  data:
    *                    type: object
    *                    properties:
-   *                      admin:
-   *                        $ref: '#/components/schemas/Admin'
+   *                      user:
+   *                        $ref: '#/components/schemas/User'
    *                  success:
    *                    type: boolean
    *                    example: true
    *                  message:
    *                    type: string
-   *                    example: Admin successfully created.
+   *                    example: User successfully created.
    *       401:
    *         description: You have not authenticated.
    *       403:
-   *         description: Username already in use. / Email address already in use.
+   *         description: Email address already in use.
    *       404:
    *         description: Role not found
    *       422:
@@ -207,65 +205,26 @@ export default function AdminsManagementRoutes(
   router.post(
     "/",
     [
-      body(["roleId", "username"]).not().isEmpty().withMessage({
-        message: ValidationMessages.FIELD_REQUIRED,
-        errorCode: 0,
-      }),
-      body("email")
+      body(["lastName", "firstName", "email", "password", "confirmPassword"])
         .not()
         .isEmpty()
         .withMessage({
           message: ValidationMessages.FIELD_REQUIRED,
           errorCode: 0,
-        })
-        .isEmail()
-        .withMessage({
-          message: ValidationMessages.INVALID_EMAIL_ADDRESS,
-          errorCode: 8,
-        })
-        .normalizeEmail({ gmail_remove_dots: false }),
-      body("password")
-        .trim()
-        .not()
-        .isEmpty()
-        .withMessage({
-          message: ValidationMessages.FIELD_REQUIRED,
-          errorCode: 0,
-        })
-        .isLength({ min: EnvironmentConfigs.getPasswordMinLength() })
-        .withMessage({
-          message: ValidationMessages.lengthConstraintsFailed({
-            min: EnvironmentConfigs.getPasswordMinLength(),
-          }),
-          errorCode: 3,
         }),
-      body("confirmPassword")
-        .trim()
-        .not()
-        .isEmpty()
-        .withMessage({
-          message: ValidationMessages.FIELD_REQUIRED,
-          errorCode: 0,
-        })
-        .custom((value, { req }) =>
-          ValidationMessages.isPasswordConfirmationMatch(
-            value,
-            req.body.password
-          )
-        ),
     ],
     (req: Request, res: Response, next: NextFunction) =>
-      adminManagementController.createAdmin(req, res, next)
+      usersManagementController.create(req, res, next)
   );
 
   /**
    * @swagger
-   * /api/v1/managements/admins/{id}:
+   * /api/v1/managements/users/{id}:
    *   put:
    *     security:
    *       - bearerAuth: []
-   *     summary: Modifier le compte d'un administrateur
-   *     tags: [Admins Management]
+   *     summary: Modifier le compte d'un utilisateur
+   *     tags: [Users Management]
    *     parameters:
    *       - in: path
    *         name: id
@@ -282,12 +241,15 @@ export default function AdminsManagementRoutes(
    *               email:
    *                 type: string
    *                 example: admin@cdv.com
-   *               username:
+   *               firstName:
+   *                 type: string
+   *                 example: john.doe
+   *               lastName:
    *                 type: string
    *                 example: john.doe
    *     responses:
    *       201:
-   *         description: Admin successfully updated.
+   *         description: User successfully updated.
    *         content:
    *           application/json:
    *             schema:
@@ -296,18 +258,18 @@ export default function AdminsManagementRoutes(
    *                  data:
    *                    type: object
    *                    properties:
-   *                      admin:
-   *                        $ref: '#/components/schemas/Admin'
+   *                      user:
+   *                        $ref: '#/components/schemas/User'
    *                  success:
    *                    type: boolean
    *                    example: true
    *                  message:
    *                    type: string
-   *                    example: Admin successfully updated.
+   *                    example: User successfully updated.
    *       401:
    *         description: You have not authenticated.
    *       403:
-   *         description: Username already in use. / Email address already in use.
+   *         description: Email address already in use.
    *       422:
    *         description: Erreur de validation des champs.
    *       500:
@@ -316,7 +278,7 @@ export default function AdminsManagementRoutes(
   router.put(
     "/:id",
     [
-      body("username")
+      body(["lastName", "firstName", "email"])
         .optional({ nullable: true })
         .not()
         .isEmpty()
@@ -324,33 +286,19 @@ export default function AdminsManagementRoutes(
           message: ValidationMessages.FIELD_REQUIRED,
           errorCode: 0,
         }),
-      body("email")
-        .optional({ nullable: true })
-        .not()
-        .isEmpty()
-        .withMessage({
-          message: ValidationMessages.FIELD_REQUIRED,
-          errorCode: 0,
-        })
-        .isEmail()
-        .withMessage({
-          message: ValidationMessages.INVALID_EMAIL_ADDRESS,
-          errorCode: 8,
-        })
-        .normalizeEmail({ gmail_remove_dots: false }),
     ],
     (req: Request, res: Response, next: NextFunction) =>
-      adminManagementController.updateAdmin(req, res, next)
+      usersManagementController.update(req, res, next)
   );
 
   /**
    * @swagger
-   * /api/v1/managements/admins/{id}/update-role:
+   * /api/v1/managements/users/{id}/update-role:
    *   put:
    *     security:
    *       - bearerAuth: []
-   *     summary: Modifier le rôle d'un administrateur
-   *     tags: [Admins Management]
+   *     summary: Modifier le rôle d'un utilisateur
+   *     tags: [Users Management]
    *     parameters:
    *       - in: path
    *         name: id
@@ -406,12 +354,12 @@ export default function AdminsManagementRoutes(
       }),
     ],
     (req: Request, res: Response, next: NextFunction) =>
-      adminManagementController.updateAdminRole(req, res, next)
+      usersManagementController.updateRole(req, res, next)
   );
 
   /**
    * @swagger
-   * /api/v1/managements/admins/{id}/update-password:
+   * /api/v1/managements/users/{id}/update-password:
    *   put:
    *     security:
    *       - bearerAuth: []
@@ -422,7 +370,7 @@ export default function AdminsManagementRoutes(
    *         schema:
    *           type: string
    *         required: true
-   *     tags: [Admins Management]
+   *     tags: [Users Management]
    *     requestBody:
    *       required: true
    *       content:
@@ -456,7 +404,7 @@ export default function AdminsManagementRoutes(
    *       403:
    *         description: Password must be provided. / Incorrect old password.
    *       404:
-   *         description: Admin not found.
+   *         description: User not found.
    *       422:
    *         description: Erreur de validation des champs.
    *       500:
@@ -511,7 +459,7 @@ export default function AdminsManagementRoutes(
         ),
     ],
     (req: Request, res: Response, next: NextFunction) =>
-      adminManagementController.updateAdminPassword(req, res, next)
+      usersManagementController.updatePassword(req, res, next)
   );
 
   return router;

@@ -2,20 +2,20 @@ import { Response, Request, NextFunction } from "express";
 import { Request as JWTRequest } from "express-jwt";
 import { validationResult } from "express-validator";
 
-import AdminService from "../services/admin.service";
+import UsersService from "../services/users.service";
 
 import ApiResponses from "../../../../helpers/api-responses.helper";
 
 import {
-  IUpdateAdminDto,
-  IUpdateAdminPasswordDto,
-} from "../interfaces/dto/services/admin.dto";
+  IUpdateUsersDto,
+  IUpdateUsersPasswordDto,
+} from "../interfaces/dto/services/users.dto";
 import { ResponseError } from "../../../../interfaces/error.interface";
 
-export default class AdminController {
-  constructor(private adminService: AdminService) {}
+export default class UsersController {
+  constructor(private usersService: UsersService) {}
 
-  public async getAdminByResetToken(
+  public async getUsersByResetToken(
     req: Request,
     res: Response,
     next: NextFunction
@@ -23,11 +23,11 @@ export default class AdminController {
     try {
       const { token } = req.params;
 
-      const admin = await this.adminService.findByResetToken(token);
+      const users = await this.usersService.findByResetToken(token);
 
       res
         .status(200)
-        .json(ApiResponses.success({ admin }, "Admin successfully found."));
+        .json(ApiResponses.success({ users }, "Users successfully found."));
     } catch (err: any) {
       if (!err.status) {
         err.status = 500;
@@ -36,19 +36,19 @@ export default class AdminController {
     }
   }
 
-  public async getConnectedAdmin(
+  public async getConnectedUsers(
     req: JWTRequest,
     res: Response,
     next: NextFunction
   ) {
     try {
-      const sub: any = req.auth?.sub;
+      const sub: any = req.auth;
 
-      const admin = await this.adminService.findOne(sub);
+      const users = await this.usersService.findOne(sub);
 
       res
         .status(200)
-        .json(ApiResponses.success({ admin }, "Connected admin found."));
+        .json(ApiResponses.success({ users }, "Connected Users found."));
     } catch (err: any) {
       if (!err.status) {
         err.status = 500;
@@ -57,7 +57,7 @@ export default class AdminController {
     }
   }
 
-  public async updateConnectedAdmin(
+  public async updateConnected(
     req: JWTRequest,
     res: Response,
     next: NextFunction
@@ -71,16 +71,15 @@ export default class AdminController {
         throw error;
       }
 
-      const sub: any = req.auth?.sub;
-      const { username } = req.body;
+      const sub: any = req.auth;
       const { email } = req.body;
 
-      const iUpdateAdminDto: IUpdateAdminDto = { id: sub, username, email };
-      const admin = await this.adminService.updateAdmin(iUpdateAdminDto);
+      const iUpdateUsersDto: IUpdateUsersDto = { id: sub.userId, email };
+      const users = await this.usersService.update(iUpdateUsersDto);
 
       res
         .status(201)
-        .json(ApiResponses.success({ admin }, "Admin successfully updated."));
+        .json(ApiResponses.success({ users }, "Users successfully updated."));
     } catch (err: any) {
       if (!err.status) {
         err.status = 500;
@@ -89,7 +88,7 @@ export default class AdminController {
     }
   }
 
-  public async updateAdminConnectedPassword(
+  public async updateUsersConnectedPassword(
     req: JWTRequest,
     res: Response,
     next: NextFunction
@@ -106,18 +105,18 @@ export default class AdminController {
       const sub: any = req.auth?.sub;
       const { oldPassword, password } = req.body;
 
-      const iUpdateAdminPasswordDto: IUpdateAdminPasswordDto = {
+      const iUpdateUsersPasswordDto: IUpdateUsersPasswordDto = {
         id: sub,
         oldPassword,
         password,
       };
-      await this.adminService.updateAdminPassword(iUpdateAdminPasswordDto);
+      await this.usersService.updatePassword(iUpdateUsersPasswordDto);
 
       res
         .status(200)
         .json(
           ApiResponses.successMessage(
-            "Admin password successfully updated.",
+            "Users password successfully updated.",
             true
           )
         );

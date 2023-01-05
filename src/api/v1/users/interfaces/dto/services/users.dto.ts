@@ -1,32 +1,35 @@
 import { FindAllDto } from "../../../../../../interfaces/models/query.interface";
 
-export interface IFindAllAdminsDto extends FindAllDto {}
+export interface IFindAllUsersDto extends FindAllDto {}
 
-export interface ICreateAdminDto {
-  username: string;
+export interface ICreateUsersDto {
+  lastName: string;
+  firstName: string;
   email: string;
   password: string;
   roleId: string;
 }
 
-export interface IUpdateAdminDto {
+export interface IUpdateUsersDto {
   id: string;
-  username?: string;
+  lastName?: string;
+  firstName?: string;
   email?: string;
+  password?: string;
 }
 
-export interface IUpdateAdminRoleDto {
+export interface IUpdateUsersRoleDto {
   id: string;
   roleId: string;
 }
 
-export interface IUpdateAdminPasswordDto {
+export interface IUpdateUsersPasswordDto {
   id: string;
   password: string;
   oldPassword: string;
 }
 
-export interface IResetAdminPasswordDto {
+export interface IResetUsersPasswordDto {
   id: string;
   password: string;
   resetPasswordRequestId: string | undefined | null;

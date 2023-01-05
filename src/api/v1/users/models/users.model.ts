@@ -1,17 +1,19 @@
 import { Schema, model, Document } from "mongoose";
 
-import { Admin } from "../interfaces/admin.model";
+import { Users } from "../interfaces/users.model";
 
-const AdminSchema = new Schema(
+const UsersSchema = new Schema(
   {
-    username: {
+    lastName: {
       type: String,
-      unique: true,
+      required: true,
+    },
+    firstName: {
+      type: String,
       required: true,
     },
     email: {
       type: String,
-      unique: true,
       required: true,
     },
     password: {
@@ -50,4 +52,4 @@ const AdminSchema = new Schema(
   }
 );
 
-export default model<Admin & Document>("Admin", AdminSchema);
+export default model<Users & Document>("Users", UsersSchema);

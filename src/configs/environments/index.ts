@@ -20,22 +20,22 @@ export default class EnvironmentConfigs {
    */
   static getDatabaseURL(): string {
     const MONGODB_USERNAME: string | undefined = EnvironmentConfigs.inProduction
-      ? process.env.EVENT_MANAGER_MONGODB_USERNAME
-      : process.env.EVENT_MANAGER_DEV_MONGODB_USERNAME;
+      ? process.env.ETICKET_MONGODB_USERNAME
+      : process.env.ETICKET_DEV_MONGODB_USERNAME;
 
     const MONGODB_PASSWORD: string | undefined = EnvironmentConfigs.inProduction
-      ? process.env.EVENT_MANAGER_MONGODB_PASSWORD
-      : process.env.EVENT_MANAGER_DEV_MONGODB_PASSWORD;
+      ? process.env.ETICKET_MONGODB_PASSWORD
+      : process.env.ETICKET_DEV_MONGODB_PASSWORD;
 
     const MONGODB_DATABASE_NAME: string | undefined =
       EnvironmentConfigs.inProduction
-        ? process.env.EVENT_MANAGER_MONGODB_DATABASE_NAME
-        : process.env.EVENT_MANAGER_DEV_MONGODB_DATABASE_NAME;
+        ? process.env.ETICKET_MONGODB_DATABASE_NAME
+        : process.env.ETICKET_DEV_MONGODB_DATABASE_NAME;
 
     const MONGODB_DATABASE_HOST: string | undefined =
       EnvironmentConfigs.inProduction
-        ? process.env.EVENT_MANAGER_MONGODB_DATABASE_HOST
-        : process.env.EVENT_MANAGER_DEV_MONGODB_DATABASE_HOST;
+        ? process.env.ETICKET_MONGODB_DATABASE_HOST
+        : process.env.ETICKET_DEV_MONGODB_DATABASE_HOST;
 
     return `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_DATABASE_HOST}/${MONGODB_DATABASE_NAME}`;
   }
@@ -46,7 +46,7 @@ export default class EnvironmentConfigs {
    * @return string
    */
   static getAppName(): string {
-    return process.env.EVENT_MANAGER_APP_NAME || "event manager server";
+    return process.env.ETICKET_APP_NAME || "event manager server";
   }
 
   /**
@@ -56,7 +56,7 @@ export default class EnvironmentConfigs {
    */
   static getServerURL(): string {
     return EnvironmentConfigs.inProduction
-      ? process.env.EVENT_MANAGER_SERVER_URL || ""
+      ? process.env.ETICKET_SERVER_URL || ""
       : `http://localhost:${this.getServerPort()}`;
   }
 

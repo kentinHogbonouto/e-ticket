@@ -1,40 +1,39 @@
 import { Response, Request, NextFunction } from "express";
 import { validationResult } from "express-validator";
 
-import AdminService from "../services/admin.service";
+import UsersService from "../services/users.service";
 
 import GeneralHelpers from "../../../../helpers/general.helper";
 import ApiResponses from "../../../../helpers/api-responses.helper";
 
 import {
-  ICreateAdminDto,
-  IFindAllAdminsDto,
-  IUpdateAdminDto,
-  IUpdateAdminPasswordDto,
-  IUpdateAdminRoleDto,
-} from "../interfaces/dto/services/admin.dto";
+  IFindAllUsersDto,
+  ICreateUsersDto,
+  IUpdateUsersDto,
+  IUpdateUsersRoleDto,
+  IUpdateUsersPasswordDto,
+} from "../interfaces/dto/services/users.dto";
 import { QuerySort } from "../../../../interfaces/models/query.enum";
 import { ResponseError } from "../../../../interfaces/error.interface";
 
-
 import EnvironmentConfigs from "../../../../configs/environments";
 
-export default class AdminManagementController {
-  constructor(private adminService: AdminService) {}
+export default class UsersManagementController {
+  constructor(private usersService: UsersService) {}
 
-  public async getAllAdmins(req: Request, res: Response, next: NextFunction) {
+  public async findAll(req: Request, res: Response, next: NextFunction) {
     try {
       let { page, size, sort } = req.query;
 
-      const params: IFindAllAdminsDto = {
+      const params: IFindAllUsersDto = {
         page: Number(page) || 1,
         sort: (sort as QuerySort) || QuerySort.DESC,
         size: Number(size) || EnvironmentConfigs.getPaginationItemsPerPage(),
       };
-      const { admins, totalElements } = await this.adminService.findAll(params);
+      const { users, totalElements } = await this.usersService.findAll(params);
 
       const response = GeneralHelpers.getPage(
-        admins,
+        users,
         params.page as number,
         params.size as number,
         totalElements
@@ -42,7 +41,7 @@ export default class AdminManagementController {
 
       res
         .status(200)
-        .json(ApiResponses.success(response, "Admins successfully found."));
+        .json(ApiResponses.success(response, "Userss successfully found."));
     } catch (err: any) {
       if (!err.status) {
         err.status = 500;
@@ -51,15 +50,15 @@ export default class AdminManagementController {
     }
   }
 
-  public async getAdmin(req: Request, res: Response, next: NextFunction) {
+  public async findOne(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
 
-      const admin = await this.adminService.findOne(id);
+      const users = await this.usersService.findOne(id);
 
       res
         .status(200)
-        .json(ApiResponses.success({ admin }, "Admin successfully found."));
+        .json(ApiResponses.success({ users }, "Users successfully found."));
     } catch (err: any) {
       if (!err.status) {
         err.status = 500;
@@ -68,7 +67,7 @@ export default class AdminManagementController {
     }
   }
 
-  public async createAdmin(req: Request, res: Response, next: NextFunction) {
+  public async create(req: Request, res: Response, next: NextFunction) {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -78,20 +77,23 @@ export default class AdminManagementController {
         throw error;
       }
 
-      const { email, username, password, roleId } = req.body;
+      const { email, password, lastName, firstName } = req.body;
 
-      const iCreateAdminDto: ICreateAdminDto = {
-        username,
+      const roleId = "djhxfnbdskjmotue";
+
+      const iCreateUsersDto: ICreateUsersDto = {
+        lastName,
+        firstName,
         email,
         password,
         roleId,
       };
 
-      const admin = await this.adminService.createAdmin(iCreateAdminDto);
+      const users = await this.usersService.create(iCreateUsersDto);
 
       res
         .status(201)
-        .json(ApiResponses.success({ admin }, "Admin successfully created."));
+        .json(ApiResponses.success({ users }, "Users successfully created."));
     } catch (err: any) {
       if (!err.status) {
         err.status = 500;
@@ -100,7 +102,7 @@ export default class AdminManagementController {
     }
   }
 
-  public async updateAdmin(req: Request, res: Response, next: NextFunction) {
+  public async update(req: Request, res: Response, next: NextFunction) {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -111,15 +113,14 @@ export default class AdminManagementController {
       }
 
       const { id } = req.params;
-      const { username } = req.body;
       const { email } = req.body;
 
-      const iUpdateAdminDto: IUpdateAdminDto = { id, username, email };
-      const admin = await this.adminService.updateAdmin(iUpdateAdminDto);
+      const iUpdateUsersDto: IUpdateUsersDto = { id, email };
+      const Users = await this.usersService.update(iUpdateUsersDto);
 
       res
         .status(201)
-        .json(ApiResponses.success({ admin }, "Admin successfully updated."));
+        .json(ApiResponses.success({ Users }, "Users successfully updated."));
     } catch (err: any) {
       if (!err.status) {
         err.status = 500;
@@ -128,7 +129,7 @@ export default class AdminManagementController {
     }
   }
 
-  public async updateAdminRole(
+  public async updateRole(
     req: Request,
     res: Response,
     next: NextFunction
@@ -145,15 +146,15 @@ export default class AdminManagementController {
       const { id } = req.params;
       const { roleId } = req.body;
 
-      const iUpdateAdminRoleDto: IUpdateAdminRoleDto = { id, roleId };
-      const admin = await this.adminService.updateAdminRole(
-        iUpdateAdminRoleDto
+      const iUpdateUsersRoleDto: IUpdateUsersRoleDto = { id, roleId };
+      const users = await this.usersService.updateRole(
+        iUpdateUsersRoleDto
       );
 
       res
         .status(201)
         .json(
-          ApiResponses.success({ admin }, "Admin role successfully updated.")
+          ApiResponses.success({ users }, "Users role successfully updated.")
         );
     } catch (err: any) {
       if (!err.status) {
@@ -163,11 +164,7 @@ export default class AdminManagementController {
     }
   }
 
-  public async updateAdminPassword(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
+  public async updatePassword(req: Request, res: Response, next: NextFunction) {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -180,18 +177,18 @@ export default class AdminManagementController {
       const { id } = req.params;
       const { oldPassword, password } = req.body;
 
-      const iUpdateAdminPasswordDto: IUpdateAdminPasswordDto = {
+      const iUpdateUsersPasswordDto: IUpdateUsersPasswordDto = {
         id,
         oldPassword,
         password,
       };
-      await this.adminService.updateAdminPassword(iUpdateAdminPasswordDto);
+      await this.usersService.updatePassword(iUpdateUsersPasswordDto);
 
       res
         .status(200)
         .json(
           ApiResponses.successMessage(
-            "Admin password successfully updated.",
+            "Users password successfully updated.",
             true
           )
         );
