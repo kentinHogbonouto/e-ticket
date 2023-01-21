@@ -31,7 +31,6 @@ export default class ApplicationConfigs {
     app.use(helmet());
     app.enable("trust proxy");
     app.use(compression());
-    
 
     /**
      * @description Register the swagger documentation endpoint
@@ -47,7 +46,11 @@ export default class ApplicationConfigs {
      */
     app.use(
       expressjwt(expressJwtConfigs).unless({
-        path: [/^\/api\/v1\/auth\/*/],
+        path: [
+          /^\/api\/v1\/auth\/*/,
+          /^\/api\/v1\/managements\/organizers\/create/,
+          /^\/api\/v1\/roles/,
+        ],
       })
     );
   }

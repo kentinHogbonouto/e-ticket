@@ -52,7 +52,7 @@ export default class OrganizerController {
       const decodeUserToken: any = jwtDecode(sub);
       const getUserId: string = decodeUserToken.userId;
 
-      const organizer = await this.organizerService.findOne(getUserId);
+      const organizer = await this.organizerService.findById(getUserId);
 
       res
         .status(200)
@@ -67,7 +67,7 @@ export default class OrganizerController {
     }
   }
 
-  public async updateConnectedOrganizer(
+  public async updateConnected(
     req: JWTRequest,
     res: Response,
     next: NextFunction
@@ -83,25 +83,14 @@ export default class OrganizerController {
 
       const getConnectedUserId: any = req.auth;
 
-      const { email } = req.body;
-      const { lastName } = req.body;
-      const { firstName } = req.body;
-      const { companyAddress } = req.body;
-      const { companyArea } = req.body;
-      const { companyName } = req.body;
-      const { companyNumber } = req.body;
-
+      const { email, firstName, lastName } = req.body;
       const iUpdateOrganizerDto: IUpdateOrganizerDto = {
         id: getConnectedUserId.userId,
         email,
         lastName,
         firstName,
-        companyAddress,
-        companyArea,
-        companyName,
-        companyNumber,
       };
-      const organizer = await this.organizerService.updateOrganizer(
+      const organizer = await this.organizerService.update(
         iUpdateOrganizerDto
       );
 
@@ -118,7 +107,7 @@ export default class OrganizerController {
     }
   }
   
-  public async updateOrganizerConnectedPassword(
+  public async updateConnectedPassword(
     req: JWTRequest,
     res: Response,
     next: NextFunction
@@ -144,7 +133,7 @@ export default class OrganizerController {
         password,
       };
 
-      await this.organizerService.updateOrganizerPassword(
+      await this.organizerService.updatePassword(
         iUpdateOrganizerPasswordDto
       );
 

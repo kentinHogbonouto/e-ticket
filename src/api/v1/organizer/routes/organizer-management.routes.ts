@@ -97,7 +97,7 @@ export default function OrganizerManagementRoutes(
    *         description: Erreur server
    */
   router.get("/", (req: Request, res: Response, next: NextFunction) =>
-  organizerManagementController.getAllOrganizers(req, res, next)
+    organizerManagementController.getAllOrganizers(req, res, next)
   );
 
   /**
@@ -141,15 +141,13 @@ export default function OrganizerManagementRoutes(
    *         description: Erreur server
    */
   router.get("/:id", (req: Request, res: Response, next: NextFunction) =>
-  organizerManagementController.getOrganizer(req, res, next)
+    organizerManagementController.getOrganizer(req, res, next)
   );
 
   /**
    * @swagger
-   * /api/v1/managements/organizers:
+   * /api/v1/managements/organizers/create:
    *   post:
-   *     security:
-   *       - bearerAuth: []
    *     summary: Créer un compte organisateur
    *     tags: [Organizer Management]
    *     requestBody:
@@ -168,18 +166,6 @@ export default function OrganizerManagementRoutes(
    *               email:
    *                 type: string
    *                 example: organizer@manger-event.com
-   *               companyName:
-   *                 type: string
-   *                 example:  eventManagaprod
-   *               companyAddress:
-   *                 type: string
-   *                 example: 44, rue place des matyre
-   *               companyNumber:
-   *                 type: string
-   *                 example: +229 62 85 96 10 / +1 819 5555555 / +254 789 651230
-   *               companyArea:
-   *                 type: string
-   *                 example: spectacle estudiantine
    *               password:
    *                 type: string
    *                 example: e§udzyi12sCsqdiè#eg!
@@ -217,11 +203,7 @@ export default function OrganizerManagementRoutes(
   router.post(
     "/",
     [
-      body("lastName").not().isEmpty().withMessage({
-        message: ValidationMessages.FIELD_REQUIRED,
-        errorCode: 0,
-      }),
-      body("firstName").not().isEmpty().withMessage({
+      body(["lastName", "firstName"]).not().isEmpty().withMessage({
         message: ValidationMessages.FIELD_REQUIRED,
         errorCode: 0,
       }),
@@ -253,22 +235,6 @@ export default function OrganizerManagementRoutes(
           }),
           errorCode: 3,
         }),
-      body("companyName").not().isEmpty().withMessage({
-        message: ValidationMessages.FIELD_REQUIRED,
-        errorCode: 0,
-      }),
-      body("companyAddress").not().isEmpty().withMessage({
-        message: ValidationMessages.FIELD_REQUIRED,
-        errorCode: 0,
-      }),
-      body("companyNumber").not().isEmpty().withMessage({
-        message: ValidationMessages.FIELD_REQUIRED,
-        errorCode: 0,
-      }),
-      body("companyArea").not().isEmpty().withMessage({
-        message: ValidationMessages.FIELD_REQUIRED,
-        errorCode: 0,
-      }),
       body("confirmPassword")
         .trim()
         .not()
@@ -285,7 +251,7 @@ export default function OrganizerManagementRoutes(
         ),
     ],
     (req: Request, res: Response, next: NextFunction) =>
-    organizerManagementController.createOrganizer(req, res, next)
+      organizerManagementController.createOrganizer(req, res, next)
   );
 
   /**
@@ -318,18 +284,6 @@ export default function OrganizerManagementRoutes(
    *               email:
    *                 type: string
    *                 example: organizer@manger-event.com
-   *               companyName:
-   *                 type: string
-   *                 example: eventManagaprod
-   *               companyAddress:
-   *                 type: string
-   *                 example: 44, rue place des matyre
-   *               companyNumber:
-   *                 type: string
-   *                 example: +229 62 85 96 10 / +1 819 5555555 / +254 789 651230
-   *               companyArea:
-   *                 type: string
-   *                 example: spectacle estudiantine
    *     responses:
    *       201:
    *         description: Organizer successfully updated.
@@ -391,41 +345,9 @@ export default function OrganizerManagementRoutes(
           errorCode: 8,
         })
         .normalizeEmail({ gmail_remove_dots: false }),
-      body("companyName")
-        .optional({ nullable: true })
-        .not()
-        .isEmpty()
-        .withMessage({
-          message: ValidationMessages.FIELD_REQUIRED,
-          errorCode: 0,
-        }),
-      body("companyAddress")
-        .optional({ nullable: true })
-        .not()
-        .isEmpty()
-        .withMessage({
-          message: ValidationMessages.FIELD_REQUIRED,
-          errorCode: 0,
-        }),
-      body("companyNumber")
-        .optional({ nullable: true })
-        .not()
-        .isEmpty()
-        .withMessage({
-          message: ValidationMessages.FIELD_REQUIRED,
-          errorCode: 0,
-        }),
-      body("companyArea")
-        .optional({ nullable: true })
-        .not()
-        .isEmpty()
-        .withMessage({
-          message: ValidationMessages.FIELD_REQUIRED,
-          errorCode: 0,
-        }),
     ],
     (req: Request, res: Response, next: NextFunction) =>
-    organizerManagementController.updateOrganizer(req, res, next)
+      organizerManagementController.updateOrganizer(req, res, next)
   );
 
   return router;

@@ -166,61 +166,7 @@ export default function OrganizerRoutes(organizerController: OrganizerController
   router.put(
     "/current",
     [
-      body("lastName")
-        .optional({ nullable: true })
-        .not()
-        .isEmpty()
-        .withMessage({
-          message: ValidationMessages.FIELD_REQUIRED,
-          errorCode: 0,
-        }),
-      body("firstName")
-        .optional({ nullable: true })
-        .not()
-        .isEmpty()
-        .withMessage({
-          message: ValidationMessages.FIELD_REQUIRED,
-          errorCode: 0,
-        }),
-      body("email")
-        .optional({ nullable: true })
-        .not()
-        .isEmpty()
-        .withMessage({
-          message: ValidationMessages.FIELD_REQUIRED,
-          errorCode: 0,
-        })
-        .isEmail()
-        .withMessage({
-          message: ValidationMessages.INVALID_EMAIL_ADDRESS,
-          errorCode: 8,
-        })
-        .normalizeEmail({ gmail_remove_dots: false }),
-      body("companyName")
-        .optional({ nullable: true })
-        .not()
-        .isEmpty()
-        .withMessage({
-          message: ValidationMessages.FIELD_REQUIRED,
-          errorCode: 0,
-        }),
-      body("companyAddress")
-        .optional({ nullable: true })
-        .not()
-        .isEmpty()
-        .withMessage({
-          message: ValidationMessages.FIELD_REQUIRED,
-          errorCode: 0,
-        }),
-      body("companyNumber")
-        .optional({ nullable: true })
-        .not()
-        .isEmpty()
-        .withMessage({
-          message: ValidationMessages.FIELD_REQUIRED,
-          errorCode: 0,
-        }),
-      body("companyArea")
+      body(["lastName", "firstName", "email"])
         .optional({ nullable: true })
         .not()
         .isEmpty()
@@ -230,7 +176,7 @@ export default function OrganizerRoutes(organizerController: OrganizerController
         }),
     ],
     (req: Request, res: Response, next: NextFunction) =>
-    organizerController.updateConnectedOrganizer(req, res, next)
+    organizerController.updateConnected(req, res, next)
   );
 
   /**
@@ -329,7 +275,7 @@ export default function OrganizerRoutes(organizerController: OrganizerController
         ),
     ],
     (req: Request, res: Response, next: NextFunction) =>
-    organizerController.updateOrganizerConnectedPassword(req, res, next)
+    organizerController.updateConnectedPassword(req, res, next)
   );
 
   return router;

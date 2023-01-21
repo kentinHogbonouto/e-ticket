@@ -88,7 +88,7 @@ export default class AdminService {
    * @return Promise<Admin>
    */
   public async findOne(id: string): Promise<Admin> {
-    return await this.getAdminById(id);
+    return await this.findById(id);
   }
 
   /**
@@ -124,12 +124,12 @@ export default class AdminService {
   }
 
   /**
-   * @function createAdmin
+   * @function create
    * @description Create an admin
    * @param iCreateAdminDto An object of type ICreateAdminDto containing the admin account informations
    * @return Promise<Admin>
    */
-  public async createAdmin(iCreateAdminDto: ICreateAdminDto): Promise<Admin> {
+  public async create(iCreateAdminDto: ICreateAdminDto): Promise<Admin> {
     const exitingAdminWithUsername = await this.adminRepository.findByUsername(
       iCreateAdminDto.username,
       false
@@ -149,29 +149,25 @@ export default class AdminService {
       );
     }
 
-    const role = await this.roleService.findOne(iCreateAdminDto.roleId, false);
-
     const createAdminDto: CreateAdminDto = {
       username: iCreateAdminDto.username,
       email: iCreateAdminDto.email,
       password: iCreateAdminDto.password,
-      role,
+      role: iCreateAdminDto.roleId,
     };
-    let admin = await this.adminRepository.createAdmin(createAdminDto);
+    let admin = await this.adminRepository.create(createAdminDto);
 
-    await this.roleService.addAdmins(role.id, [admin.id]);
-
-    return this.getAdminById(admin.id);
+    return this.findById(admin.id);
   }
 
   /**
-   * @function updateAdmin
+   * @function update
    * @description Update an admin
    * @param iUpdateAdminDto An object of type IUpdateAdminDto containing the admin account informations
    * @return Promise<Admin>
    */
-  public async updateAdmin(iUpdateAdminDto: IUpdateAdminDto): Promise<Admin> {
-    let admin: any = await this.getAdminById(iUpdateAdminDto.id);
+  public async update(iUpdateAdminDto: IUpdateAdminDto): Promise<Admin> {
+    let admin: any = await this.findById(iUpdateAdminDto.id);
 
     const updateAdminDto: UpdateAdminDto = {
       id: iUpdateAdminDto.id,
@@ -203,20 +199,20 @@ export default class AdminService {
       updateAdminDto.email = iUpdateAdminDto.email;
     }
 
-    admin = await this.adminRepository.updateAdmin(updateAdminDto);
+    admin = await this.adminRepository.update(updateAdminDto);
     return admin;
   }
 
   /**
-   * @function updateAdminRole
+   * @function updateRole
    * @description Update an admin role
    * @param iUpdateAdminRoleDto An object of type IUpdateAdminRoleDto containing the admin role
    * @return Promise<Admin>
    */
-  public async updateAdminRole(
+  public async updateRole(
     iUpdateAdminRoleDto: IUpdateAdminRoleDto
   ): Promise<Admin> {
-    let admin: any = await this.getAdminById(iUpdateAdminRoleDto.id);
+    let admin: any = await this.findOne(iUpdateAdminRoleDto.id);
 
     if (!iUpdateAdminRoleDto.roleId) {
       throw new createHttpError.Forbidden(
@@ -236,20 +232,20 @@ export default class AdminService {
       id: iUpdateAdminRoleDto.id,
       role,
     };
-    admin = await this.adminRepository.updateAdmin(updateAdminDto);
+    admin = await this.adminRepository.update(updateAdminDto);
     return admin;
   }
 
   /**
-   * @function updateAdminPassword
+   * @function updatePassword
    * @description Update an admin password
    * @param iUpdateAdminPasswordDto An object of type IUpdateTeacherPasswordDto containing the admin password
    * @return Promise<void>
    */
-  public async updateAdminPassword(
+  public async updatePassword(
     iUpdateAdminPasswordDto: IUpdateAdminPasswordDto
   ): Promise<void> {
-    let admin: any = await this.getAdminById(iUpdateAdminPasswordDto.id);
+    let admin: any = await this.findOne(iUpdateAdminPasswordDto.id);
 
     if (!iUpdateAdminPasswordDto.password) {
       throw new createHttpError.Forbidden(
@@ -271,19 +267,19 @@ export default class AdminService {
       id: iUpdateAdminPasswordDto.id,
       password: iUpdateAdminPasswordDto.password,
     };
-    await this.adminRepository.updateAdmin(updateAdminDto);
+    await this.adminRepository.update(updateAdminDto);
 
     return;
   }
 
   /**
    * TODO
-   * @function resetAdminPassword
+   * @function resetPassword
    * @description
    * @param iResetAdminPasswordDto
    * @return void
    */
-  public async resetAdminPassword(
+  public async resetPassword(
     iResetAdminPasswordDto: IResetAdminPasswordDto
   ): Promise<void> {
     const updateAdminDto: UpdateAdminDto = {
@@ -291,7 +287,7 @@ export default class AdminService {
       password: iResetAdminPasswordDto.password,
       resetPasswordRequestId: iResetAdminPasswordDto.resetPasswordRequestId,
     };
-    await this.adminRepository.updateAdmin(updateAdminDto);
+    await this.adminRepository.update(updateAdminDto);
 
     return;
   }
@@ -309,13 +305,13 @@ export default class AdminService {
 
   /**
    * TODO
-   * @function getAdminById
+   * @function findById
    * @description
    * @param id
    * @return
    */
-  private async getAdminById(id: string): Promise<Admin> {
-    const admin = await this.adminRepository.getAdminById(id);
+  private async findById(id: string): Promise<Admin> {
+    const admin = await this.adminRepository.findById(id);
     if (!admin) {
       throw new createHttpError.NotFound(AdminValidationMessages.NOT_FOUND);
     }

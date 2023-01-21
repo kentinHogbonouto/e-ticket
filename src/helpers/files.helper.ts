@@ -1,4 +1,5 @@
 import EnvironmentConfigs from "../configs/environments";
+import multer from "multer"
 
 export default class FilesHelpers {
   /**
@@ -27,5 +28,21 @@ export default class FilesHelpers {
     return EnvironmentConfigs.getAuthorizedFileTypes().find(
       (type) => type.toLowerCase() === this.getFileType(mimetype).toLowerCase()
     );
+  }
+
+  /**
+   * @function uploadFile
+   * @description upload file
+   * @return any
+   */
+  public static uploadFile(mimetype: string): any {
+    const storage = multer.diskStorage({
+      destination: (req: any, file: any, callback: any) => {
+        callback(null, '../assets/image');
+      },
+      filename: (req: any, file: any, callback: any) => {
+        callback(null, file.fieldname);
+      }
+    });
   }
 }

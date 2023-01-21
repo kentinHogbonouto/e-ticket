@@ -30,9 +30,9 @@ export default function AuthRoutes(authController: AuthController) {
    *           schema:
    *             type: object
    *             properties:
-   *               username:
+   *               username | email:
    *                 type: string
-   *                 example: john.doe
+   *                 example: john.doe | john@doe
    *               password:
    *                 type: string
    *                 example: e§udzyi12sCsqdiè#eg!

@@ -274,7 +274,7 @@ export default function AdminsRoutes(adminController: AdminController) {
         ),
     ],
     (req: Request, res: Response, next: NextFunction) =>
-      adminController.updateAdminConnectedPassword(req, res, next)
+      adminController.updateConnectedPassword(req, res, next)
   );
 
   return router;

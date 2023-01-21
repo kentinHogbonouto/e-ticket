@@ -97,7 +97,7 @@ export default function AdminsManagementRoutes(
    *         description: Erreur server
    */
   router.get("/", (req: Request, res: Response, next: NextFunction) =>
-    adminManagementController.getAllAdmins(req, res, next)
+    adminManagementController.findAll(req, res, next)
   );
 
   /**
@@ -141,7 +141,7 @@ export default function AdminsManagementRoutes(
    *         description: Erreur server
    */
   router.get("/:id", (req: Request, res: Response, next: NextFunction) =>
-    adminManagementController.getAdmin(req, res, next)
+    adminManagementController.findById(req, res, next)
   );
 
   /**
@@ -161,19 +161,16 @@ export default function AdminsManagementRoutes(
    *             properties:
    *               email:
    *                 type: string
-   *                 example: admin@cdv.com
-   *               roleId:
-   *                 type: string
-   *                 example: 610299a5f4723947e8e9fd95
+   *                 example: admin@eticket.com
    *               username:
    *                 type: string
-   *                 example: john.doe
+   *                 example: eticket
    *               password:
    *                 type: string
-   *                 example: e§udzyi12sCsqdiè#eg!
+   *                 example: 1234567890
    *               confirmPassword:
    *                 type: string
-   *                 example: e§udzyi12sCsqdiè#eg!
+   *                 example: 1234567890
    *     responses:
    *       201:
    *         description: Admin successfully created.
@@ -207,7 +204,7 @@ export default function AdminsManagementRoutes(
   router.post(
     "/",
     [
-      body(["roleId", "username"]).not().isEmpty().withMessage({
+      body(["username"]).not().isEmpty().withMessage({
         message: ValidationMessages.FIELD_REQUIRED,
         errorCode: 0,
       }),
@@ -255,7 +252,7 @@ export default function AdminsManagementRoutes(
         ),
     ],
     (req: Request, res: Response, next: NextFunction) =>
-      adminManagementController.createAdmin(req, res, next)
+      adminManagementController.create(req, res, next)
   );
 
   /**
@@ -340,7 +337,7 @@ export default function AdminsManagementRoutes(
         .normalizeEmail({ gmail_remove_dots: false }),
     ],
     (req: Request, res: Response, next: NextFunction) =>
-      adminManagementController.updateAdmin(req, res, next)
+      adminManagementController.update(req, res, next)
   );
 
   /**
@@ -406,7 +403,7 @@ export default function AdminsManagementRoutes(
       }),
     ],
     (req: Request, res: Response, next: NextFunction) =>
-      adminManagementController.updateAdminRole(req, res, next)
+      adminManagementController.updateRole(req, res, next)
   );
 
   /**
@@ -511,7 +508,7 @@ export default function AdminsManagementRoutes(
         ),
     ],
     (req: Request, res: Response, next: NextFunction) =>
-      adminManagementController.updateAdminPassword(req, res, next)
+      adminManagementController.updatePassword(req, res, next)
   );
 
   return router;

@@ -113,8 +113,21 @@ import EventCouponRoutes from "../api/v1/event-coupon/routes/event-coupon.routes
       )
     )
   );
+
   router.use(
     "/v1/managements/organizers",
+    OrganizerManagementRoutes(
+      new OrganizerManagementController(
+        new OrganizerService(
+          new OrganizerRepository(),
+          new RoleService(new RoleRepository())
+        )
+      )
+    )
+  );
+
+  router.use(
+    "/v1/managements/organizers/create",
     OrganizerManagementRoutes(
       new OrganizerManagementController(
         new OrganizerService(
@@ -236,6 +249,33 @@ import EventCouponRoutes from "../api/v1/event-coupon/routes/event-coupon.routes
  *           items:
  *             $ref: '#/components/schemas/Role'
  *
+ *     Organizer:
+ *       type: object
+ *       required:
+ *         - lastName
+ *         - firstName
+ *         - email
+ *         - password
+ *       properties:
+ *         id:
+ *           type: string
+ *         lastName:
+ *           type: string
+ *         firstName:
+ *           type: string
+ *         email:
+ *           type: string
+ *         password:
+ *           type: string
+ *         resetToken:
+ *           type: string
+ *         resetTokenExpiration:
+ *           type: string
+ *         resetPasswordRequestId:
+ *           type: string
+ *         role:
+ *           $ref: '#/components/schemas/Role'
+ * 
  *     Admin:
  *       type: object
  *       required:
@@ -260,43 +300,6 @@ import EventCouponRoutes from "../api/v1/event-coupon/routes/event-coupon.routes
  *         role:
  *           $ref: '#/components/schemas/Role'
  * 
- *     Organizer:
- *       type: object
- *       required:
- *         - lastName
- *         - firstName
- *         - email
- *         - companyName
- *         - companyAddress
- *         - companyNumber
- *         - companyArea
- *       properties:
- *         id:
- *           type: string
- *         lastName:
- *           type: string
- *         firstName:
- *           type: string
- *         email:
- *           type: string
- *         companyName:
- *           type: string
- *         companyAddress:
- *           type: string
- *         companyNumber:
- *           type: string
- *         companyArea:
- *           type: string
- *         password:
- *           type: string
- *         resetToken:
- *           type: string
- *         resetTokenExpiration:
- *           type: string
- *         resetPasswordRequestId:
- *           type: string
- *         role:
- *           $ref: '#/components/schemas/Role'
  * 
  *     Users:
  *       type: object

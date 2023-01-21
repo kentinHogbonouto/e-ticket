@@ -26,26 +26,6 @@ const OrganizerSchema = new Schema(
       required: true,
       select: false,
     },
-    companyName: {
-      type: String,
-      unique: false,
-      required: true,
-    },
-    companyAddress: {
-      type: String,
-      unique: false,
-      required: true,
-    },
-    companyNumber: {
-      type: PhoneNumberSchema,
-      unique: true,
-      required: true,
-    },
-    companyArea: {
-      type: String,
-      unique: false,
-      required: true,
-    },
     resetToken: {
       type: String,
       select: false,

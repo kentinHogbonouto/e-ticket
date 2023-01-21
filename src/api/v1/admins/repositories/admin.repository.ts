@@ -70,11 +70,11 @@ export default class AdminRepository {
     );
   }
 
-  public async getAdminById(id: string): Promise<Admin | null> {
+  public async findById(id: string): Promise<Admin | null> {
     return await AdminModel.findById(id).select("+role").populate("role");
   }
 
-  public async createAdmin(createAdminDto: CreateAdminDto): Promise<Admin> {
+  public async create(createAdminDto: CreateAdminDto): Promise<Admin> {
     const hashedPassword = await PasswordHelpers.hashPassword(
       createAdminDto.password
     );
@@ -87,7 +87,7 @@ export default class AdminRepository {
     });
   }
 
-  public async updateAdmin(
+  public async update(
     updateAdminDto: UpdateAdminDto
   ): Promise<Admin | null> {
     const admin = await AdminModel.findById(updateAdminDto.id);

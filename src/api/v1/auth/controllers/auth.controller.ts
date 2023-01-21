@@ -10,10 +10,10 @@ export default class AuthController {
 
   public async login(req: Request, res: Response, next: NextFunction) {
     try {
-      const { username, password } = req.body;
+      const { email, password } = req.body;
 
       const token: string = await this.authService.authenticate(
-        username,
+        email,
         password
       );
 

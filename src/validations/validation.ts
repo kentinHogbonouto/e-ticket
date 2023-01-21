@@ -7,6 +7,7 @@ export class ValidationMessages {
   public static USERNAME_ALREADY_IN_USE = "Username already in use.";
   public static EMAIL_ALREADY_IN_USE = "Email address already in use.";
   public static INVALID_EMAIL_ADDRESS = "Invalid email address.";
+  public static ORGANIZER_NOT_FOUND = "organizer not found.";
   public static PASSWORD_MUST_BE_PROVIDED = "Password must be provided.";
   public static INCORRECT_OLD_PASSWORD = "Incorrect old password.";
   public static MUST_BE_AN_ARRAY = "Must be an array.";

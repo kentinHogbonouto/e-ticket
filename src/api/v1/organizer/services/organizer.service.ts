@@ -4,8 +4,6 @@ import OrganizerRepository from "../repositories/organizer.repository";
 
 import PasswordHelpers from "../../../../helpers/password.helper";
 
-import GeneralHelpers from "../../../../helpers/general.helper";
-
 import RoleService from "../../roles/services/role.service";
 
 import { Organizer } from "../interfaces/organizer.model";
@@ -58,7 +56,7 @@ export default class OrganizerService {
 
   /**
    * @function findAll
-   * @description Get the list of all organizer
+   * @description GET the list of all organizer
    * @param iFindAllOrganizerDto An object of type IFindAllOrganizerDto containing the query filters
    * @return Promise<{ organizer: Organizer[]; totalElements: number }>
    */
@@ -85,18 +83,24 @@ export default class OrganizerService {
   }
 
   /**
-   * @function findOne
-   * @description Get organizer by id
+   * @function findById
+   * @description GET organizer by id
    * @param id The id of the organizer
    * @return Promise<Organizer>
    */
-  public async findOne(id: string): Promise<Organizer> {
-    return await this.getOrganizerById(id);
+  public async findById(id: string): Promise<Organizer | null> {
+    let oraganizer = await this.organizerRepository.findById(id);
+
+    if(!oraganizer){
+
+    }
+
+    return oraganizer;
   }
 
   /**
    * @function findByEmail
-   * @description Get organizer by email
+   * @description GET organizer by email
    * @param email The email of the organizer
    * @return Promise<Organizer | null>
    */
@@ -106,7 +110,7 @@ export default class OrganizerService {
 
   /**
    * @function findByResetPasswordRequestId
-   * @description Get organizer by reset password request id
+   * @description GET organizer by reset password request id
    * @param requestId The request id
    * @return Promise<Organizer | null>
    */
@@ -119,12 +123,12 @@ export default class OrganizerService {
   }
 
   /**
-   * @function createOrganizer
-   * @description Create an organizer
+   * @function create
+   * @description CREATE an organizer
    * @param iCreateOrganizerDto An object of type ICreateOrganizerDto containing the organizer account informations
    * @return Promise<Organizer>
    */
-  public async createOrganizer(
+  public async create(
     iCreateOrganizerDto: ICreateOrganizerDto
   ): Promise<Organizer> {
     const existingOrganizerWithEmail =
@@ -147,51 +151,39 @@ export default class OrganizerService {
       email: iCreateOrganizerDto.email,
       lastName: iCreateOrganizerDto.lastName,
       firstName: iCreateOrganizerDto.firstName,
-      companyName: iCreateOrganizerDto.companyName,
-      companyAddress: iCreateOrganizerDto.companyAddress,
-      companyNumber: GeneralHelpers.getPhoneNumber(
-        iCreateOrganizerDto.companyNumber
-      ),
-      companyArea: iCreateOrganizerDto.companyArea,
       password: iCreateOrganizerDto.password,
-      role,
+      role: iCreateOrganizerDto.roleId,
     };
-    let organizer = await this.organizerRepository.createOrganizer(
+    let organizer = await this.organizerRepository.create(
       createOrganizerDto
     );
 
-    await this.roleService.addOrganizer(role.id, [organizer.id]);
-
-    return this.getOrganizerById(organizer.id);
+    return organizer;
   }
 
   /**
-   * @function updateOrganizer
-   * @description Update an organizer account
+   * @function update
+   * @description UPDATE an organizer account
    * @param iUpdateOrganizerDto An object of type IUpdateOrganizerDto containing the organizer account informations
    * @return Promise<Organizer>
    */
-  public async updateOrganizer(
+  public async update(
     iUpdateOrganizerDto: IUpdateOrganizerDto
   ): Promise<Organizer> {
-    let organizer: any = await this.getOrganizerById(iUpdateOrganizerDto.id);
+    let organizer: any = await this.organizerRepository.findById(iUpdateOrganizerDto.id);
 
+    if(!organizer){
+      throw new createHttpError.NotFound(
+        ValidationMessages.ORGANIZER_NOT_FOUND
+      );
+    }
     const updateOrganizerDto: UpdateOrganizerDto = {
       id: iUpdateOrganizerDto.id,
       firstName: iUpdateOrganizerDto.firstName,
       lastName: iUpdateOrganizerDto.lastName,
-      companyAddress: iUpdateOrganizerDto.companyAddress,
-      companyName: iUpdateOrganizerDto.companyName,
-      companyArea: iUpdateOrganizerDto.companyArea,
     };
 
-    if (iUpdateOrganizerDto.companyNumber) {
-      updateOrganizerDto.companyNumber = GeneralHelpers.getPhoneNumber(
-        iUpdateOrganizerDto.companyNumber
-      );
-    }
-
-    organizer = await this.organizerRepository.updateOrganizer(
+    organizer = await this.organizerRepository.update(
       updateOrganizerDto
     );
 
@@ -199,15 +191,15 @@ export default class OrganizerService {
   }
 
   /**
-   * @function updateOrganizerPassword
-   * @description Update an organizer password
+   * @function update
+   * @description UPDATE an organizer password
    * @param iUpdateOrganizerPasswordDto An object of type iUpdateOrganizerPasswordDto containing the organizer password
    * @return Promise<void>
    */
-  public async updateOrganizerPassword(
+  public async updatePassword(
     iUpdateOrganizerPasswordDto: IUpdateOrganizerPasswordDto
   ): Promise<void> {
-    let organizer: any = await this.getOrganizerById(
+    let organizer: any = await this.findById(
       iUpdateOrganizerPasswordDto.id
     );
 
@@ -232,19 +224,19 @@ export default class OrganizerService {
       id: iUpdateOrganizerPasswordDto.id,
       password: iUpdateOrganizerPasswordDto.password,
     };
-    await this.organizerRepository.updateOrganizer(updateOrganizerDto);
+    await this.organizerRepository.update(updateOrganizerDto);
 
     return;
   }
 
   /**
    * TODO
-   * @function resetOrganizerPassword
+   * @function resetPassword
    * @description
    * @param iResetOrganizerPasswordDto
    * @return void
    */
-  public async resetOrganizerPassword(
+  public async resetPassword(
     iResetOrganizerPasswordDto: IResetOrganizerPasswordDto
   ): Promise<void> {
     const updateOrganizerDto: UpdateOrganizerDto = {
@@ -252,7 +244,7 @@ export default class OrganizerService {
       password: iResetOrganizerPasswordDto.password,
       resetPasswordRequestId: iResetOrganizerPasswordDto.resetPasswordRequestId,
     };
-    await this.organizerRepository.updateOrganizer(updateOrganizerDto);
+    await this.organizerRepository.update(updateOrganizerDto);
 
     return;
   }
@@ -269,19 +261,5 @@ export default class OrganizerService {
   ): Promise<Organizer | null> {
     return await this.organizerRepository.generateResetPasswordToken(id);
   }
-
-  /**
-   * TODO
-   * @function getOrganizerById
-   * @description
-   * @param id
-   * @return
-   */
-  private async getOrganizerById(id: string): Promise<Organizer> {
-    const organizer = await this.organizerRepository.getOrganizerById(id);
-    if (!organizer) {
-      throw new createHttpError.NotFound(OrganizerValidationMessages.NOT_FOUND);
-    }
-    return organizer;
-  }
+  
 }

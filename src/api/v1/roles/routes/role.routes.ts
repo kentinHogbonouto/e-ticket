@@ -143,8 +143,6 @@ export default function RolesRoutes(roleController: RoleController) {
    * @swagger
    * /api/v1/roles:
    *   post:
-   *     security:
-   *       - bearerAuth: []
    *     summary: Créer un role
    *     tags: [Roles Management]
    *     requestBody:

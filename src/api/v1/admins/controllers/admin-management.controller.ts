@@ -16,13 +16,12 @@ import {
 import { QuerySort } from "../../../../interfaces/models/query.enum";
 import { ResponseError } from "../../../../interfaces/error.interface";
 
-
 import EnvironmentConfigs from "../../../../configs/environments";
 
 export default class AdminManagementController {
   constructor(private adminService: AdminService) {}
 
-  public async getAllAdmins(req: Request, res: Response, next: NextFunction) {
+  public async findAll(req: Request, res: Response, next: NextFunction) {
     try {
       let { page, size, sort } = req.query;
 
@@ -51,7 +50,7 @@ export default class AdminManagementController {
     }
   }
 
-  public async getAdmin(req: Request, res: Response, next: NextFunction) {
+  public async findById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
 
@@ -68,7 +67,7 @@ export default class AdminManagementController {
     }
   }
 
-  public async createAdmin(req: Request, res: Response, next: NextFunction) {
+  public async create(req: Request, res: Response, next: NextFunction) {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -78,29 +77,30 @@ export default class AdminManagementController {
         throw error;
       }
 
-      const { email, username, password, roleId } = req.body;
+      const { email, username, password } = req.body;
 
       const iCreateAdminDto: ICreateAdminDto = {
         username,
         email,
         password,
-        roleId,
+        roleId: "63c95f17b8bdfa73146ce0cc",
       };
 
-      const admin = await this.adminService.createAdmin(iCreateAdminDto);
+      const admin = await this.adminService.create(iCreateAdminDto);
 
       res
         .status(201)
         .json(ApiResponses.success({ admin }, "Admin successfully created."));
     } catch (err: any) {
       if (!err.status) {
+        console.log(err);
         err.status = 500;
       }
       next(err);
     }
   }
 
-  public async updateAdmin(req: Request, res: Response, next: NextFunction) {
+  public async update(req: Request, res: Response, next: NextFunction) {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -115,7 +115,7 @@ export default class AdminManagementController {
       const { email } = req.body;
 
       const iUpdateAdminDto: IUpdateAdminDto = { id, username, email };
-      const admin = await this.adminService.updateAdmin(iUpdateAdminDto);
+      const admin = await this.adminService.update(iUpdateAdminDto);
 
       res
         .status(201)
@@ -128,11 +128,7 @@ export default class AdminManagementController {
     }
   }
 
-  public async updateAdminRole(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
+  public async updateRole(req: Request, res: Response, next: NextFunction) {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -146,9 +142,7 @@ export default class AdminManagementController {
       const { roleId } = req.body;
 
       const iUpdateAdminRoleDto: IUpdateAdminRoleDto = { id, roleId };
-      const admin = await this.adminService.updateAdminRole(
-        iUpdateAdminRoleDto
-      );
+      const admin = await this.adminService.updateRole(iUpdateAdminRoleDto);
 
       res
         .status(201)
@@ -163,11 +157,7 @@ export default class AdminManagementController {
     }
   }
 
-  public async updateAdminPassword(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
+  public async updatePassword(req: Request, res: Response, next: NextFunction) {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -185,7 +175,7 @@ export default class AdminManagementController {
         oldPassword,
         password,
       };
-      await this.adminService.updateAdminPassword(iUpdateAdminPasswordDto);
+      await this.adminService.updatePassword(iUpdateAdminPasswordDto);
 
       res
         .status(200)

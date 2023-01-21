@@ -5,10 +5,6 @@ export interface IFindAllOrganizerDto extends FindAllDto {}
 export interface ICreateOrganizerDto {
   lastName: string;
   firstName: string;
-  companyName: string;
-  companyAddress: string;
-  companyNumber: string;
-  companyArea: string;
   email: string;
   password: string;
   roleId: string;
@@ -18,10 +14,6 @@ export interface IUpdateOrganizerDto {
   id: string;
   lastName?: string;
   firstName?: string;
-  companyName?: string;
-  companyAddress?: string;
-  companyNumber?: string;
-  companyArea?: string;
   email?: string;
 }
 

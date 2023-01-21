@@ -14,16 +14,16 @@ import { AuthValidationMessages } from "../validations/auth.validation";
 export default class AuthService {
   constructor(
     private adminService: AdminService,
-    private organizerService: OrganizerService
+    private organizerService: OrganizerService,
   ) {}
 
   public async authenticate(
-    uername: string,
+    identifier: string,
     password: string
   ): Promise<string> {
     let token = "";
 
-    const organizer = await this.organizerService.findByEmail(uername);
+    const organizer = await this.organizerService.findByEmail(identifier);
     if (organizer) {
       if (!organizer.password) {
         throw new createHttpError.Forbidden(
@@ -46,7 +46,7 @@ export default class AuthService {
       });
     }
 
-    const admin = await this.adminService.findByUsername(uername);
+    const admin = await this.adminService.findByUsername(identifier);
     if (admin) {
       if (!admin.password) {
         throw new createHttpError.Forbidden(
@@ -68,6 +68,7 @@ export default class AuthService {
         userType: UserType.ADMIN,
       });
     }
+
     if (!admin && !organizer) {
       throw new createHttpError.Forbidden(
         AuthValidationMessages.INCORRECT_USERNAME

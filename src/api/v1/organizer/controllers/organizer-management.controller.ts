@@ -58,7 +58,7 @@ export default class OrganizerManagementController {
     try {
       const { id } = req.params;
 
-      const organizer = await this.organizerService.findOne(id);
+      const organizer = await this.organizerService.findById(id);
 
       res
         .status(200)
@@ -91,27 +91,18 @@ export default class OrganizerManagementController {
         email,
         lastName,
         firstName,
-        companyName,
-        companyAddress,
-        companyNumber,
-        companyArea,
         password,
-        roleId,
       } = req.body;
 
       const iCreateOrganizerDto: ICreateOrganizerDto = {
         lastName,
         firstName,
-        companyName,
-        companyAddress,
-        companyNumber,
-        companyArea,
         email,
         password,
-        roleId,
+        roleId: "63c95f21b8bdfa73146ce0ce",
       };
 
-      const organizer = await this.organizerService.createOrganizer(
+      const organizer = await this.organizerService.create(
         iCreateOrganizerDto
       );
 
@@ -144,27 +135,17 @@ export default class OrganizerManagementController {
       }
 
       const { id } = req.params;
-      const { lastName } = req.body;
-      const { firstName } = req.body;
-      const { companyName } = req.body;
-      const { companyAddress } = req.body;
-      const { companyArea } = req.body;
-      const { companyNumber } = req.body;
-      const { email } = req.body;
+      const { lastName, firstName, email } = req.body;
 
       
       const iUpdateOrganizerDto: IUpdateOrganizerDto = {
         id,
         lastName,
         firstName,
-        companyName,
-        companyAddress,
-        companyArea,
-        companyNumber,
         email,
       };
       
-      const organizer = await this.organizerService.updateOrganizer(
+      const organizer = await this.organizerService.update(
         iUpdateOrganizerDto
       );
 

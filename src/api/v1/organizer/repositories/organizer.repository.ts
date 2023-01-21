@@ -64,11 +64,11 @@ export default class OrganizerRepository {
     );
   }
 
-  public async getOrganizerById(id: string): Promise<Organizer | null> {
+  public async findById(id: string): Promise<Organizer | null> {
     return await OrganizerModel.findById(id).select("+role").populate("role");
   }
 
-  public async createOrganizer(
+  public async create(
     createOrganizerDto: CreateOrganizerDto
   ): Promise<Organizer> {
     const hashedPassword = await PasswordHelpers.hashPassword(
@@ -78,17 +78,13 @@ export default class OrganizerRepository {
     return await OrganizerModel.create({
       lastName: createOrganizerDto.lastName,
       firstName: createOrganizerDto.firstName,
-      companyName: createOrganizerDto.companyName,
-      companyAddress: createOrganizerDto.companyAddress,
-      companyArea: createOrganizerDto.companyArea,
-      companyNumber: createOrganizerDto.companyNumber,
       email: createOrganizerDto.email,
       password: hashedPassword,
       role: createOrganizerDto.role,
     });
   }
 
-  public async updateOrganizer(
+  public async update(
     updateOrganizerDto: UpdateOrganizerDto
   ): Promise<Organizer | null> {
     const organizer = await OrganizerModel.findById(updateOrganizerDto.id);
@@ -101,18 +97,6 @@ export default class OrganizerRepository {
       organizer.firstName = updateOrganizerDto.firstName;
     
     if (updateOrganizerDto.email) organizer.email = updateOrganizerDto.email;
-    
-    if (updateOrganizerDto.companyName)
-      organizer.companyName = updateOrganizerDto.companyName;
-    
-    if (updateOrganizerDto.companyAddress)
-      organizer.companyAddress = updateOrganizerDto.companyAddress;
-    
-    if (updateOrganizerDto.companyArea)
-      organizer.companyArea = updateOrganizerDto.companyArea;
-    
-    if (updateOrganizerDto.companyNumber)
-      organizer.companyNumber = updateOrganizerDto.companyNumber;
     
     if (updateOrganizerDto.password) {
       organizer.password = await PasswordHelpers.hashPassword(

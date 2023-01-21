@@ -76,7 +76,7 @@ export default class AdminController {
       const { email } = req.body;
 
       const iUpdateAdminDto: IUpdateAdminDto = { id: sub, username, email };
-      const admin = await this.adminService.updateAdmin(iUpdateAdminDto);
+      const admin = await this.adminService.update(iUpdateAdminDto);
 
       res
         .status(201)
@@ -89,7 +89,7 @@ export default class AdminController {
     }
   }
 
-  public async updateAdminConnectedPassword(
+  public async updateConnectedPassword(
     req: JWTRequest,
     res: Response,
     next: NextFunction
@@ -111,7 +111,7 @@ export default class AdminController {
         oldPassword,
         password,
       };
-      await this.adminService.updateAdminPassword(iUpdateAdminPasswordDto);
+      await this.adminService.updatePassword(iUpdateAdminPasswordDto);
 
       res
         .status(200)
