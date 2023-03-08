@@ -1,6 +1,6 @@
 import { model, Schema, Document } from "mongoose";
 
-import { Events } from "../interfaces/event.model";
+import { Event } from "../interfaces/event.model";
 
 const EventSchema = new Schema(
   {
@@ -63,4 +63,4 @@ const EventSchema = new Schema(
   }
 );
 
-export default model<Events & Document>("Event", EventSchema);
+export default model<Event & Document>("Event", EventSchema);

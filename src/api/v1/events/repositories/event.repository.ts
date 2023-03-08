@@ -7,7 +7,7 @@ import {
   UpdateEventDto,
 } from "../interfaces/dto/repositories/event.dto";
 import { IFindAllEventDto } from "../interfaces/dto/services/event.dto";
-import { Events } from "../interfaces/event.model";
+import { Event } from "../interfaces/event.model";
 
 import { QuerySort } from "../../../../interfaces/models/query.enum";
 
@@ -16,7 +16,7 @@ export default class EventRepository {
     return await this.count();
   }
 
-  public async findAll(iFindAllEventDto: IFindAllEventDto): Promise<Events[]> {
+  public async findAll(iFindAllEventDto: IFindAllEventDto): Promise<Event[]> {
     if (iFindAllEventDto.page && iFindAllEventDto.size) {
       return await EventModel.find()
         .skip((iFindAllEventDto.page - 1) * iFindAllEventDto.size)
@@ -28,19 +28,19 @@ export default class EventRepository {
     });
   }
 
-  public async findById(id: string): Promise<Events | null> {
+  public async findById(id: string): Promise<Event | null> {
     return await EventModel.findById(id)
       .select("+organizer")
       .populate("organizer")
   }
 
-  public async findByName(name: string): Promise<Events | null> {
+  public async findByName(name: string): Promise<Event | null> {
     const query = { name };
 
     return await EventModel.findOne(query);
   }
 
-  public async create(createEventDto: CreateEventDto): Promise<Events> {
+  public async create(createEventDto: CreateEventDto): Promise<Event> {
     return await EventModel.create({
       name: createEventDto.name,
       shortDescription: createEventDto.shortDescription,
@@ -56,7 +56,7 @@ export default class EventRepository {
     });
   }
 
-  public async update(updateEventDto: UpdateEventDto): Promise<Events | null> {
+  public async update(updateEventDto: UpdateEventDto): Promise<Event | null> {
     const event = await EventModel.findById(updateEventDto.id);
     if (!event) return null;
 
@@ -75,14 +75,14 @@ export default class EventRepository {
     return await event.save();
   }
 
-  public async delete(id: string): Promise<Events | null> {
+  public async delete(id: string): Promise<Event | null> {
     const event = await EventModel.findById(id);
     if (!event) return null;
 
     return await event.remove();
   }
 
-  private async count(query?: FilterQuery<Events>): Promise<number> {
+  private async count(query?: FilterQuery<Event>): Promise<number> {
     if (query) {
       return await EventModel.countDocuments(query);
     }

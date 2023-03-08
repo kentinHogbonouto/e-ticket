@@ -1,6 +1,6 @@
 import { Organizer } from "../../organizer/interfaces/organizer.model";
 
-export interface Events {
+export interface Event {
   id: string;
   name: string;
   shortDescription: string;

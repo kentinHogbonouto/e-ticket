@@ -6,7 +6,7 @@ import EventTypesService from "../../event-types/services/event-types.service";
 
 import { CreateEventDto, UpdateEventDto } from "../interfaces/dto/repositories/event.dto";
 import { IFindAllEventDto, ICreateEventDto, IUpdateEventDto } from "../interfaces/dto/services/event.dto";
-import { Events } from "../interfaces/event.model";
+import { Event } from "../interfaces/event.model";
 
 import { EventValidationMessage } from "../validations/event.validations";
 
@@ -21,8 +21,8 @@ export default class EventService {
    */
    public async findAll(
     iFindAllEventDto: IFindAllEventDto
-  ): Promise<{ events: Events[]; totalElements: number }> {
-    let events: Events[] = [];
+  ): Promise<{ events: Event[]; totalElements: number }> {
+    let events: Event[] = [];
 
     let totalElements = await this.eventRepository.countAll();
 
@@ -47,7 +47,7 @@ export default class EventService {
    * @param id: The event id.
    * @return Promise<Events>
    */
-  public async findOne(id: string): Promise<Events> {
+  public async findOne(id: string): Promise<Event> {
     let event = await this.eventRepository.findById(id);
 
     if (!event) {
@@ -63,7 +63,7 @@ export default class EventService {
    * @param iCreateEventDto: An object of type CreateEventDto containing the event information.
    * @return Promise<Events>
    */
-  public async create(iCreateEventDto: ICreateEventDto): Promise<Events> {
+  public async create(iCreateEventDto: ICreateEventDto): Promise<Event> {
     const existingEventWithName = await this.eventRepository.findByName(
       iCreateEventDto.name
     );
@@ -99,7 +99,7 @@ export default class EventService {
    * @param iUpdateEventDto: An object of type IUpdateEventDto containing the event information
    * @return Promise<Events>
    */
-  public async update(iUpdateEventDto: IUpdateEventDto): Promise<Events> {
+  public async update(iUpdateEventDto: IUpdateEventDto): Promise<Event> {
     let event: any = await this.getEventById(iUpdateEventDto.id);
 
     const updateEventDto: UpdateEventDto = {
@@ -152,7 +152,7 @@ export default class EventService {
    * @param id
    * @return Promise<Events>
    */
-   private async getEventById(id: any): Promise<Events> {
+   private async getEventById(id: any): Promise<Event> {
     const event = await this.eventRepository.findById(id);
     if (!event) {
       throw new createHttpError.NotFound(EventValidationMessage.NOT_FOUND);
