@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "pretty": true,
+    "sourceMap": true,
+    "rootDir": "./src",
+    "target": "es6",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "include": ["src", "src/api/v1/seeds/admin-accounts.seeder.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts", "upload"],
+  "forceConsistentCasingInFileNames": false
+}
