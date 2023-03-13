@@ -2,7 +2,7 @@ import { model, Schema, Document } from "mongoose";
 
 import { EventCoupon } from "../interfaces/event-coupon.model";
 
-const CouponSchema = new Schema(
+const EventCouponSchema = new Schema(
   {
     formuleQuantity: {
       type: Number,
@@ -31,4 +31,4 @@ const CouponSchema = new Schema(
   }
 );
 
-export default model<EventCoupon & Document>("Coupon", CouponSchema);
+export default model<EventCoupon & Document>("EventCoupon", EventCouponSchema);
