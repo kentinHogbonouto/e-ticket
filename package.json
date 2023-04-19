@@ -5,12 +5,13 @@
   "main": "./src/server.ts",
   "license": "MIT",
   "scripts": {
+    "postinstall": "yarn run build",
     "prebuild": "rimraf dist",
-    "build": "npx tsc",
+    "build": "tsc",
     "dev": "nodemon src/server",
     "start": "node dist/server",
-    "test": "vitest --run --reporter verbose --globals",
-    "test:watch": "vitest"
+    "test": "jest",
+    "test:watch": "jest"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
