@@ -10,4 +10,5 @@ export interface Organizer {
   resetToken?: string;
   resetTokenExpiration?: Date;
   resetPasswordRequestId?: string;
+  event?: string[];
 }

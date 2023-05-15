@@ -8,8 +8,10 @@ import {
 } from "../interfaces/dto/repositories/event.dto";
 import { IFindAllEventDto } from "../interfaces/dto/services/event.dto";
 import { Event } from "../interfaces/event.model";
+import organizerModel from "../../organizer/models/organizer.model";
 
 import { QuerySort } from "../../../../interfaces/models/query.enum";
+import { Organizer } from "../../organizer/interfaces/organizer.model";
 
 export default class EventRepository {
   public async countAll(): Promise<number> {
@@ -41,7 +43,7 @@ export default class EventRepository {
   }
 
   public async create(createEventDto: CreateEventDto): Promise<Event> {
-    return await EventModel.create({
+    let event =  await EventModel.create({
       name: createEventDto.name,
       shortDescription: createEventDto.shortDescription,
       type: createEventDto.type,
@@ -52,8 +54,23 @@ export default class EventRepository {
       startTime: createEventDto.startTime,
       endDate: createEventDto.endDate,
       endTime: createEventDto.endTime,
-      organizer: createEventDto.organizer
+      organizer: createEventDto.organizer,
+      cover: createEventDto.cover
     });
+
+    let organizer: any  = await organizerModel.findById(
+      createEventDto.organizer
+      ).select("+event");
+
+      console.log("organizer: ", organizer);
+      
+
+    if (organizer) {
+      organizer.event.push(event._id);
+      await organizer.save();
+    }
+
+      return event
   }
 
   public async update(updateEventDto: UpdateEventDto): Promise<Event | null> {
@@ -71,6 +88,7 @@ export default class EventRepository {
     if (updateEventDto.endDate) event.endDate = updateEventDto.endDate;
     if (updateEventDto.startTime) event.startTime = updateEventDto.startTime;
     if (updateEventDto.endTime) event.endTime = updateEventDto.endTime;
+    if (updateEventDto.cover) event.cover = updateEventDto.cover;
 
     return await event.save();
   }

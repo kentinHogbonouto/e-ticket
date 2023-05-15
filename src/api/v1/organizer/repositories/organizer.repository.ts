@@ -65,7 +65,10 @@ export default class OrganizerRepository {
   }
 
   public async findById(id: string): Promise<Organizer | null> {
-    return await OrganizerModel.findById(id).select("+role").populate("role");
+    return await OrganizerModel.findById(id)
+      .select("+role +event")
+      .populate("role")
+      .populate("event");
   }
 
   public async create(
@@ -95,9 +98,9 @@ export default class OrganizerRepository {
 
     if (updateOrganizerDto.firstName)
       organizer.firstName = updateOrganizerDto.firstName;
-    
+
     if (updateOrganizerDto.email) organizer.email = updateOrganizerDto.email;
-    
+
     if (updateOrganizerDto.password) {
       organizer.password = await PasswordHelpers.hashPassword(
         updateOrganizerDto.password

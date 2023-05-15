@@ -30,6 +30,12 @@ const OrganizerSchema = new Schema(
       type: String,
       select: false,
     },
+    event: {
+      type: [Schema.Types.ObjectId],
+      ref: "Event",
+      required: false,
+      select: false,
+    },
     resetTokenExpiration: {
       type: Date,
       select: false,

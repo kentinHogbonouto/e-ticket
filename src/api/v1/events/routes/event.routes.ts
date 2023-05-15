@@ -6,6 +6,39 @@ import EventController from "../controllers/event.controller";
 
 import { body } from "express-validator";
 
+import FilesHelpers from "../../../../helpers/files.helper"
+
+import { join, extname } from "path";
+import multer from "multer";
+
+const uploadPath = join(process.cwd(), "upload", "images");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadPath);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, file.fieldname + "-" + uniqueSuffix + extname(file.originalname));
+  },
+});
+
+const upload = multer({
+  storage,
+  fileFilter: function (req, file, cb) {
+    if (
+      ["image/jpeg", "image/png", "image/jpg", "image/jpeg"].includes(
+        file.mimetype
+      )
+    ) {
+      cb(null, true);
+    } else {
+      cb(null, false);
+    }
+  },
+});
+
+
 export default function EventRoutes(eventController: EventController) {
   const router = Router();
 
@@ -227,6 +260,7 @@ export default function EventRoutes(eventController: EventController) {
    */
   router.post(
     "/",
+    upload.single("picture"),
     [
       body([
         "name",

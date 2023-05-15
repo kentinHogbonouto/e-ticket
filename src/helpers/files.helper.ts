@@ -1,5 +1,7 @@
 import EnvironmentConfigs from "../configs/environments";
 import multer from "multer"
+import { join, extname } from "path";
+const uploadPath = join(process.cwd(), "upload", "images");
 
 export default class FilesHelpers {
   /**
@@ -35,14 +37,30 @@ export default class FilesHelpers {
    * @description upload file
    * @return any
    */
-  public static uploadFile(mimetype: string): any {
+  public static uploadFile(): any {
     const storage = multer.diskStorage({
-      destination: (req: any, file: any, callback: any) => {
-        callback(null, '../assets/image');
+      destination: function (req, file, cb) {
+        cb(null, uploadPath);
       },
-      filename: (req: any, file: any, callback: any) => {
-        callback(null, file.fieldname);
-      }
+      filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+        cb(null, file.fieldname + "-" + uniqueSuffix + extname(file.originalname));
+      },
+    });
+    
+    multer({
+      storage,
+      fileFilter: function (req, file, cb) {
+        if (
+          ["image/jpeg", "image/png", "image/jpg", "image/jpeg"].includes(
+            file.mimetype
+          )
+        ) {
+          cb(null, true);
+        } else {
+          cb(null, false);
+        }
+      },
     });
   }
 }

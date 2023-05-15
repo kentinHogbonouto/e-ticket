@@ -13,6 +13,7 @@ export interface IFindEventDto {
   startTime: Date;
   endDate: Date;
   endTime: Date;
+  cover: string | undefined;
 }
 
 export interface ICreateEventDto {
@@ -27,6 +28,7 @@ export interface ICreateEventDto {
   endDate: Date;
   endTime: Date;
   organizerId: string;
+  cover: string | undefined;
 }
 
 export interface IUpdateEventDto {
@@ -41,4 +43,5 @@ export interface IUpdateEventDto {
   startTime: Date;
   endDate: Date;
   endTime: Date;
+  cover: string | undefined;
 }

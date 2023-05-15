@@ -85,7 +85,8 @@ export default class EventService {
       startTime: iCreateEventDto.startTime,
       endDate: iCreateEventDto.endDate,
       endTime: iCreateEventDto.endTime,
-      organizer: iCreateEventDto.organizerId
+      organizer: iCreateEventDto.organizerId,
+      cover: iCreateEventDto.cover,
     };
 
     let event = await this.eventRepository.create(createEventDto);
@@ -112,7 +113,8 @@ export default class EventService {
       startDate: iUpdateEventDto.startDate,
       startTime: iUpdateEventDto.startTime,
       endDate: iUpdateEventDto.endDate,
-      endTime: iUpdateEventDto.endTime
+      endTime: iUpdateEventDto.endTime,
+      cover: iUpdateEventDto.cover
     };
 
     if (iUpdateEventDto.name) {

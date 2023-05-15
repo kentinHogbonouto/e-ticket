@@ -36,8 +36,11 @@ export default class EnvironmentConfigs {
       EnvironmentConfigs.inProduction
         ? process.env.ETICKET_MONGODB_DATABASE_HOST
         : process.env.ETICKET_DEV_MONGODB_DATABASE_HOST;
+    let dbUri = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_DATABASE_HOST}/${MONGODB_DATABASE_NAME}`;
 
-    return `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_DATABASE_HOST}/${MONGODB_DATABASE_NAME}`;
+    console.log(dbUri);
+    
+    return dbUri;
   }
 
   /**
@@ -148,5 +151,4 @@ export default class EnvironmentConfigs {
   static getPasswordMinLength(): number {
     return Number(process.env.PASSWORD_MIN_LENGTH) || 8;
   }
-
 }

@@ -368,4 +368,34 @@ import EventCouponRoutes from "../api/v1/event-coupon/routes/event-coupon.routes
  *           type: string
  *         totalCoupons:
  *           type: string
+ * 
+ *     Organizers:
+ *       type: object
+ *       required:
+ *         - name
+ *       properties:
+ *         lastName:
+ *           type: string
+ *         firstName:
+ *           type: string 
+ *         email:
+ *           type: string
+ *         password:
+ *           type: string
+ *         confirmPassword:
+ *           type: string
+ * 
+ *     Coupon:
+ *       type: object
+ *       required:
+ *         - name
+ *       properties:
+ *         formuleName:
+ *           type: string
+ *         formuleQuantity:
+ *           type: string
+ *         formuleMatricule:
+ *           type: string
+ *         totalCoupons:
+ *           type: string
  */

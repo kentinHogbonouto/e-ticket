@@ -13,4 +13,5 @@ export interface Event {
   endDate: Date;
   endTime: Date;
   organizer: Organizer;
+  cover: string | undefined;
 }

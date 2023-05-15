@@ -96,6 +96,7 @@ export default class EventController {
         startTime,
         endDate,
         endTime,
+        cover,
       } = req.body;
 
       const iCreateEventDto: ICreateEventDto = {
@@ -109,7 +110,8 @@ export default class EventController {
         startTime,
         endDate,
         endTime,
-        organizerId: sub.userId
+        organizerId: sub.userId,
+        cover: req.file?.filename,
       };
 
       const event = await this.eventService.create(iCreateEventDto);
@@ -162,6 +164,7 @@ export default class EventController {
         startTime,
         endDate,
         endTime,
+        cover: req.file?.filename,
       };
 
       const event = await this.eventService.update(iUpdateEventDto);

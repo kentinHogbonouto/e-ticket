@@ -25,6 +25,11 @@ ApplicationConfigs.init(app);
 ApplicationConfigs.initRoutes(app);
 
 /**
+ * @description Initialize upload directory
+ */
+ApplicationConfigs.fileDirectoryInitializer();
+
+/**
  * @description Handles errors
  */
 ApplicationConfigs.handleErrors(app);

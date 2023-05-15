@@ -12,6 +12,7 @@ export interface CreateEventDto {
   endDate: Date;
   endTime: Date;
   organizer: string;
+  cover: string | undefined;
 }
 
 export interface UpdateEventDto {
@@ -26,4 +27,5 @@ export interface UpdateEventDto {
   startTime?: Date;
   endDate?: Date;
   endTime?: Date;
+  cover?: string | undefined;
 }

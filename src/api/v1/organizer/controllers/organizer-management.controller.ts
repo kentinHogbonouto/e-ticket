@@ -99,7 +99,7 @@ export default class OrganizerManagementController {
         firstName,
         email,
         password,
-        roleId: "63c95f21b8bdfa73146ce0ce",
+        roleId: "64626db080165b64b66a11b4",
       };
 
       const organizer = await this.organizerService.create(

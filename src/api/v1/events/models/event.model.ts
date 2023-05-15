@@ -29,7 +29,7 @@ const EventSchema = new Schema(
       required: true,
     },
     startDate: {
-      type: Date,
+      type: String,
       required: true,
     },
     startTime: {
@@ -37,12 +37,16 @@ const EventSchema = new Schema(
       required: true,
     },
     endDate: {
-      type: Date,
+      type: String /**DO TO cast to right type later */,
       required: true,
     },
     endTime: {
       type: String /**DO TO cast to right type later */,
       required: true,
+    },
+    cover: {
+      type: String /**DO TO cast to right type later */,
+      required: false,
     },
     organizer: {
       type: Schema.Types.ObjectId,

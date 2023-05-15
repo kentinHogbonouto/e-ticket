@@ -7,6 +7,7 @@ import swaggerJsDoc from "swagger-jsdoc";
 import { expressjwt } from "express-jwt";
 import createHttpError from "http-errors";
 import path, { join } from "path";
+import fs from "fs";
 
 import swaggerConfigs from "./swagger.configs";
 import expressJwtConfigs from "./express-jwt.configs";
@@ -22,6 +23,11 @@ export default class ApplicationConfigs {
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
     app.use(express.static(path.join(__dirname, "..", "..", "public")));
+    /**
+     * @description Picture path
+     */
+    const uploadDir = path.join(__dirname, "..", "..", "upload");
+    app.use("/upload", express.static(uploadDir));
 
     app.use(
       cors({
@@ -60,6 +66,25 @@ export default class ApplicationConfigs {
      * @description Register the API routes
      */
     app.use("/api", allRoutes());
+  }
+
+  static fileDirectoryInitializer() {
+    /**
+     * @description Create upload direcotry
+     */
+    const parentFolderName = "upload";
+    const folderName = "images";
+
+    const parentPath = `./${parentFolderName}`;
+    const path = `${parentPath}/${folderName}`;
+
+    if (!fs.existsSync(parentPath)) {
+      fs.mkdirSync(parentPath);
+    }
+
+    if (!fs.existsSync(path)) {
+      fs.mkdirSync(path);
+    }
   }
 
   static handleErrors(app: Application): void {
